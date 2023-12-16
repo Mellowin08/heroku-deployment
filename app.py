@@ -32,7 +32,7 @@ def download_files():
         gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
 
         files_downloaded = True
-        print("Files downloaded successfully.")
+    
 
 # Load the vectorizer and SVM classifier using joblib
 vectorizer = joblib.load(destination_path_vectorizer)
@@ -255,5 +255,5 @@ if __name__ == '__main__':
 
     # Download files when the Flask app starts
     download_files()
-    
+
     app.run(debug=True)
