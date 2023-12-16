@@ -1,9 +1,50 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session 
 # Import function
-from satisfaction_analysis import predict_sentiment
 import pandas as pd
 import spacy
 from textblob import TextBlob
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
+from data_preprocess import text_cleaner
+import joblib
+import numpy as np
+import gdown
+
+# Google Drive links for the files
+google_drive_link_vectorizer = "https://drive.google.com/uc?id=1EzHFwNxd1FXUvZ8sArzX0moWrhA0fdHP"
+google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-HnrITGXyiQ2GpGj0yEXaOxm"
+
+# Destination paths for saving the downloaded files
+destination_path_vectorizer = "tfidf_vectorizer.joblib"
+destination_path_svm_classifier = "SVM_classifier.joblib"
+
+# Download the files from Google Drive
+gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
+gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
+
+# Load the vectorizer and SVM classifier using joblib
+vectorizer = joblib.load(destination_path_vectorizer)
+svm_classifier = joblib.load(destination_path_svm_classifier)
+
+
+
+def predict_sentiment(user_input):
+    clean_input = text_cleaner(user_input)
+
+    input_vectorized = vectorizer.transform([clean_input])
+    main_prediction = svm_classifier.predict(input_vectorized)
+
+    # Calculate decision scores for each class
+    decision_scores = svm_classifier.decision_function(input_vectorized)
+
+    # Calculate confidence levels using softmax
+    confidence_levels = np.exp(decision_scores) / np.sum(np.exp(decision_scores), axis=1, keepdims=True)
+
+    # Convert confidence levels to percentages and round to whole numbers
+    confidence_percentages = (confidence_levels * 100).round().astype(int).tolist()
+
+    return main_prediction[0], confidence_percentages[0]
 
 nlp = spacy.load("en_core_web_sm")
 
