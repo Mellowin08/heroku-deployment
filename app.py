@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session 
 # Import function
+
 import pandas as pd
 import spacy
 from textblob import TextBlob
@@ -19,20 +20,10 @@ google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-Hnr
 destination_path_vectorizer = "tfidf_vectorizer.joblib"
 destination_path_svm_classifier = "SVM_classifier.joblib"
 
-# Flag to check if files have already been downloaded
-files_downloaded = False
+# Function to download files from Google Drive
+def download_file(google_drive_link, destination_path):
+    gdown.download(google_drive_link, destination_path, quiet=False)
 
-def download_files():
-    global files_downloaded
-    if not files_downloaded:
-        # Download the tfidf_vectorizer file from Google Drive
-        gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
-
-        # Download the SVM_classifier file from Google Drive
-        gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
-
-        files_downloaded = True
-    
 
 # Load the vectorizer and SVM classifier using joblib
 vectorizer = joblib.load(destination_path_vectorizer)
@@ -252,8 +243,8 @@ def result_page():
     return render_template('result_page.html', positive_count=positive_count, negative_count=negative_count, neutral_count=neutral_count, total_count=total_count, ranking=ranking, hvalue=hvalue, hlabel=hlabel, svalue=svalue, slabel=slabel, lvalue=lvalue, llabel=llabel, positive_phrases=positive_phrases, negative_phrases=negative_phrases, neutral_phrases=neutral_phrases)
 
 if __name__ == '__main__':
-
-    # Download files when the Flask app starts
-    download_files()
+    # Download the files from Google Drive when the Flask app is started
+    download_file(google_drive_link_vectorizer, destination_path_vectorizer)
+    download_file(google_drive_link_svm_classifier, destination_path_svm_classifier)
 
     app.run(debug=True)
