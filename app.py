@@ -10,6 +10,7 @@ import re
 import nltk
 from nltk.corpus import stopwords
 import numpy as np
+from pathlib import Path
 nltk.download('stopwords', quiet=True)
 
 nlp = spacy.load("en_core_web_sm")
@@ -40,6 +41,25 @@ def text_cleaner(text):
     cleaned_text = " ".join(word for word in words if word not in stop_words) # Remove the stopwords from the text.
     print(cleaned_text)
     return cleaned_text
+
+destination_path_vectorizer = "tfidf_vectorizer.joblib"
+destination_path_svm_classifier = "SVM_classifier.joblib"
+
+# Check if the files exist, download if not
+if not (Path(destination_path_vectorizer).exists() and Path(destination_path_svm_classifier).exists()):
+    google_drive_link_vectorizer = "https://drive.google.com/uc?id=1EzHFwNxd1FXUvZ8sArzX0moWrhA0fdHP"
+    google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-HnrITGXyiQ2GpGj0yEXaOxm"
+
+    gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
+    gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
+
+# Load the vectorizer and SVM classifier using joblib
+vectorizer = joblib.load(destination_path_vectorizer)
+svm_classifier = joblib.load(destination_path_svm_classifier)
+
+# Load the vectorizer and SVM classifier using joblib
+vectorizer = joblib.load(destination_path_vectorizer)
+svm_classifier = joblib.load(destination_path_svm_classifier)
 
 def predict_sentiment(user_input):
     clean_input = text_cleaner(user_input)
@@ -246,20 +266,4 @@ def result_page():
     return render_template('result_page.html', positive_count=positive_count, negative_count=negative_count, neutral_count=neutral_count, total_count=total_count, ranking=ranking, hvalue=hvalue, hlabel=hlabel, svalue=svalue, slabel=slabel, lvalue=lvalue, llabel=llabel, positive_phrases=positive_phrases, negative_phrases=negative_phrases, neutral_phrases=neutral_phrases)
 
 if __name__ == '__main__':
-    # Google Drive links for the files
-    google_drive_link_vectorizer = "https://drive.google.com/uc?id=1EzHFwNxd1FXUvZ8sArzX0moWrhA0fdHP"
-    google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-HnrITGXyiQ2GpGj0yEXaOxm"
-
-    # Destination paths for saving the downloaded files
-    destination_path_vectorizer = "tfidf_vectorizer.joblib"
-    destination_path_svm_classifier = "SVM_classifier.joblib"
-
-    # Download the files from Google Drive
-    gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
-    gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
-
-    # Load the vectorizer and SVM classifier using joblib
-    vectorizer = joblib.load(destination_path_vectorizer)
-    svm_classifier = joblib.load(destination_path_svm_classifier)
-
     app.run(debug=True)
