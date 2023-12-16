@@ -1,0 +1,162 @@
+html {
+    background-color: #0E1D34;
+}
+
+.container-fluid {
+    background-color: #0E1D34;
+    padding-top: 150px;
+    padding-bottom: 150px;
+}
+
+
+.major-image {
+    width: 400px !important;
+    height: auto;
+}
+h2 {
+    color: #A3C6EE;
+}
+h3,
+h4 {
+    color: #1E63B2;
+}
+p{
+    color: white;
+}
+
+#analyze2-btn, 
+#openModalButton,
+#openModalButton2 {
+    border-width: 2px;
+    font-weight: 500;
+    font-size: 17px;
+    background-color: var(--color-periwinkle);
+    color:#0E1D34;
+    border-color: transparent;
+}
+#analyze2-btn:hover,
+#analyze2-btn:active,
+#openModalButton:hover,
+#openModalButton:active,
+#openModalButton2:hover,
+#openModalButton2:active{
+    border-width: 2px;
+    background-color:#1E63B2;
+    color:rgb(255, 255, 255);
+    border-color: transparent;
+}
+
+.modal-1,
+.modal-2 {
+    color: #0E1D34;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #1E63B2 !important;
+    padding: 20px;
+    border-radius: 10px;
+    width: 500px !important;
+    height: auto !important;
+    position: relative;
+    overflow-y: auto; /* Add this line to make the modal scrollable */
+    max-height: 80vh;
+}
+
+
+.close-button {
+    position: relative;
+    margin-left: 420px;
+    cursor: pointer;
+    color: #0E1D34; /* Set the color for the close button text */
+}
+@media (max-width: 768px) {
+    
+
+.container-fluid {
+    background-color: #0E1D34;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.major-image {
+    width: 300px !important;
+    height: auto;
+}
+h2 {
+    color: #A3C6EE;
+}
+h3,
+h4 {
+    color: #1E63B2;
+}
+p{
+    color: white;
+}
+
+#analyze2-btn, 
+#openModalButton,
+#openModalButton2 {
+        border-width: 2px;
+        font-weight: 500;
+        font-size: 17px;
+        background-color: var(--color-periwinkle);
+        color:#0E1D34;
+        border-color: transparent;
+    }
+    #analyze2-btn:hover,
+    #analyze2-btn:active,
+    #openModalButton:hover,
+    #openModalButton:active,
+    #openModalButton2:hover,
+    #openModalButton2:active{
+        border-width: 2px;
+        background-color:#1E63B2;
+        color:white;
+        border-color: transparent;
+    }
+
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: #1E63B2 !important;
+        padding: 0px;
+        border-radius: 10px;
+        width: 400px !important;
+        max-width: 100%;
+        height: auto !important;
+        position: relative;
+    }
+
+    .close-button {
+        position: relative;
+        margin-left: 310px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        color: #0E1D34; /* Set the color for the close button text */
+    }
+}

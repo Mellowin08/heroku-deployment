@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/results.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Analysis Results</title>
+</head>
+<body>
+    <!-- modal -->
+    <div id="myModal2" class="modal">
+        <div class="modal-content text-center">
+            <h2>{{ slabel }}</h2>
+            <p class="modal-1">{{ svalue }} out of {{ total_count }}</p>
+            {% if slabel == 'Positive' %}
+                {% for phrase in positive_phrases %}
+                    <p>{{ phrase }}</p>
+                {% endfor %}
+            {% elif slabel == 'Negative' %}
+                {% for phrase in negative_phrases %}
+                    <p>{{ phrase }}</p>
+                {% endfor %}
+            {% elif slabel == 'Neutral' %}
+                {% for phrase in neutral_phrases %}
+                    <p>{{ phrase }}</p>
+                {% endfor %}
+            {% endif %}
+            <span class="close-button" onclick="closeModal2()">Close</span>
+        </div>
+    </div>
+    <!-- modal2 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content text-center">
+            <h2>{{ llabel }}</h2>
+            <p class="modal-2">{{ lvalue }} out of {{ total_count }}</p>
+            {% if llabel == 'Positive' %}
+                {% for phrase in positive_phrases %}
+                    <p>{{ phrase }}</p>
+                {% endfor %}
+            {% elif llabel == 'Negative' %}
+                {% for phrase in negative_phrases %}
+                    <p>{{ phrase }}</p>
+                {% endfor %}
+            {% elif llabel == 'Neutral' %}
+                {% for phrase in neutral_phrases %}
+                    <p>{{ phrase }}</p>
+                {% endfor %}
+            {% endif %}
+            <span class="close-button" onclick="closeModal1()">Close</span>
+        </div>
+    </div>
+    <div id="result"class="container-fluid">
+        <div class="row">
+            <div class="col text-center">
+                <div class="container-fluid">
+                    <h2>Top {{ hlabel }} Reviews</h2>
+                    <div id="reviewContainer">
+                        {% if hlabel == 'Positive' %}
+                            {% for phrase in positive_phrases %}
+                                <p>{{ phrase }}</p>
+                            {% endfor %}
+                        {% elif hlabel == 'Negative' %}
+                            {% for phrase in negative_phrases %}
+                                <p>{{ phrase }}</p>
+                            {% endfor %}
+                        {% elif hlabel == 'Neutral' %}
+                            {% for phrase in neutral_phrases %}
+                                <p>{{ phrase }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center">
+                <h2 class="text-center">Consolidated Product Reviews Analyzer</h2><br>
+                <h3 class="text-center">ANALYSIS RESULT</h3><br>
+                {% if hlabel == 'Negative' %}
+                    <img src="/static/images/Sentivm-Negative.png" class="major-image" alt="Negative Sentiment Image">
+                {% elif hlabel == 'Neutral' %}
+                    <img src="/static/images/Sentivm-Neutral.png" class="major-image" alt="Neutral Sentiment Image">
+                {% elif hlabel == 'Positive' %}
+                    <img src="/static/images/Sentivm-Positive.png" class="major-image" alt="Positive Sentiment Image">
+                {% endif %}
+                
+                <h2>{{ hlabel }}</h2>
+                <p>{{ hvalue }} out of {{ total_count }}</p>
+                <a id="analyze2-btn" class="btn btn-primary btn-lg mt-2" href="consolidated_reviews.html">Analyze Another</a>
+            </div>
+            <div class="col-12 col-md-4 text-center px-md-5">
+                <div id="mid-sen" class="container-fluid">
+                    <h2 class="mb-5">Other Reviews</h2>
+                    <h4>{{ slabel }}</h4>
+                    <p>{{ svalue }} out of {{ total_count }}</p>
+                    <a id="openModalButton2" class="btn btn-primary btn-lg mt-2">View Results</a>
+                    <div class="container mt-3">
+                        <h4>{{ llabel }}</h4>
+                        <p>{{ lvalue }} out of {{ total_count }}</p>
+                        <a id="openModalButton" class="btn btn-primary btn-lg mt-2">View Results</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>        
+</body>
+<script>
+    function toggleVisibility() {
+        var reviewContainer = document.getElementById("reviewContainer");
+        var allParagraphs = reviewContainer.getElementsByTagName("p");
+
+        for (var i = 5; i < allParagraphs.length; i++) {
+            if (allParagraphs[i].style.display === "none") {
+                allParagraphs[i].style.display = "block";
+            } else {
+                allParagraphs[i].style.display = "none";
+            }
+        }
+
+        var buttonText = document.getElementById("showMoreButton");
+        buttonText.innerHTML = (buttonText.innerHTML === "Show More") ? "Show Less" : "Show More";
+    }
+    
+    var reviewContainer = document.getElementById("reviewContainer");
+    var allParagraphs = reviewContainer.getElementsByTagName("p");
+    
+    for (var i = 5; i < allParagraphs.length; i++) {
+        allParagraphs[i].style.display = "none";
+    }
+</script>
+<script>
+    // Function to open Modal 1
+    $("#openModalButton").on("click", function() {
+        $("#myModal").css("display", "flex");
+    });
+
+    // Function to close Modal 1
+    function closeModal1() {
+        $("#myModal").css("display", "none");
+    }
+
+    // Function to open Modal 2
+    $("#openModalButton2").on("click", function() {
+        $("#myModal2").css("display", "flex");
+    });
+
+    // Function to close Modal 2
+    function closeModal2() {
+        $("#myModal2").css("display", "none");
+    }
+</script>
+
+</html>
+
+
