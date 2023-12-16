@@ -2,7 +2,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
 from data_preprocess import text_cleaner
 import joblib
-import os
 import numpy as np
 import gdown
 
