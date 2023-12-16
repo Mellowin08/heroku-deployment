@@ -9,6 +9,7 @@ from sklearn.svm import SVC
 from data_preprocess import text_cleaner
 import joblib
 import numpy as np
+import os
 import gdown
 
 # Google Drive links for the files
@@ -19,13 +20,18 @@ google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-Hnr
 destination_path_vectorizer = "tfidf_vectorizer.joblib"
 destination_path_svm_classifier = "SVM_classifier.joblib"
 
-# Download the files from Google Drive
-gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
-gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
+# Check if files already exist
+if not os.path.exists(destination_path_vectorizer):
+    # Download the tfidf_vectorizer file from Google Drive
+    gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
+else:
+    print(f"{destination_path_vectorizer} already exists. Skipping download.")
 
-# Load the vectorizer and SVM classifier using joblib
-vectorizer = joblib.load(destination_path_vectorizer)
-svm_classifier = joblib.load(destination_path_svm_classifier)
+if not os.path.exists(destination_path_svm_classifier):
+    # Download the SVM_classifier file from Google Drive
+    gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
+else:
+    print(f"{destination_path_svm_classifier} already exists. Skipping download.")
 
 
 
