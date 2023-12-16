@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap & CSS-->
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/individual_review.css">
+    <link rel="stylesheet" href="../static/css/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="../static/images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../static/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="../static/images/favicons//site.webmanifest">
+    <!-- Footer Script -->
+    <script src="../static/js/footer.js" type="text/javascript" defer></script>
+    <!-- Other Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>RevU's | Individual Analyzer</title>
+</head>
+<body>
+    <!-- Disclaimer Modal -->
+    <div id="individual_disclaimer" class="modal">
+        <div class="modal-content p-md-5 modal-scrollable">
+            <center>
+            <h2>Disclaimer</h2>
+                <p>Our machine learning model, which uses the Support Vector Machine (SVM) algorithm, is quite effective for classifying things. However, the model has its limitations. </p>
+                <p>It's optimized for English product reviews, so it might not work as well with reviews in other languages. It's also great with the basics, but might not always get slang or uncommon words due to training limitations. And when it comes to reviews with mixed emotions, it might not be able to fully capture it. </p>
+                <p>So, just keep in mind that while our model is handy, it's not perfect and might have its ups and downs depending on the language and the complexity of what it's analyzing.</p>
+            <button id="individual_understandButton" class="blue-button">I Understand</button>
+            </center>
+        </div>
+    </div>
+    <!-- Navbar -->
+    <nav style="background-color: #0E1D34;" class="pl-5 pr-5 navbar navbar-expand-lg align-items-center navbar-dark fixed-top">
+        <a class="navbar-brand" href="index.html">RevU’s</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <a class="nav-link" href="index.html#home">Home</a>
+                <a class="nav-link" href="index.html#features">Features</a>
+                <a class="nav-link" href="index.html#context">Context</a>
+                <a class="nav-link" href="index.html#team">The Team</a>
+                <li class="nav-item dropdown">
+                    <a id="caret" class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Analyzer
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right fade-in" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item active" href="individual_review.html">Individual Review</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="consolidated_reviews.html">Consolidated Reviews</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Analyzer -->
+    <div class="container col-12">
+        <div id="analyzer" class="justify-content-center m-5 pl-3 pr-3">
+            <h2 class="text-center">Individual Product Review Classifier</h2>
+            <div class="row m-3">
+                <div class="col-md-6">
+                    <form id="reviewForm">  
+                        <div class="form-group">
+                            <h4><label for="review" class="prompt">Enter your review:</label></h4>
+                            <textarea id="review" class="form-control autosize" rows="3" cols="5" maxlength="500"></textarea>
+                            <div class="container controls">
+                                <span id="review-count" style="  display: block; text-align: right;">0/500 character limit</span>
+                                <button type="button" class="btn btn-danger" id="clearButton" disabled title="Ctrl+Enter">Clear</button>
+                                <button type="button" class="btn btn-primary" id="predictButton" disabled title="Enter">Predict</button>    
+                            </div>
+                            <div id="shortcutLegend" class="mt-5">
+                                <h5>Keyboard Shortcuts</h5>
+                                <p><strong><em>Clear:</em></strong> Ctrl+Enter <br>
+                                <strong><em>Predict:</em></strong> Enter</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center flex-column mt-2" id="result">
+                        <img id="Sentivm" src="../static/images/Sentivm-Off.png" alt="predictive analytics">
+                        <div class="text-center mt-2" id="result1">
+                            <h2 class="prediction-text" id="predictionResult"></h2>
+                            <h4 id="cdlevel" style="display: none;"> Confidence Level: </h4>
+                            <div class="d-flex justify-content-center label-pred">
+                                <p class="pred-left text-center mr-5">
+                                    <span id="lpred-label"></span><br>
+                                    <span id="lpred-value"></span>
+                                </p>
+                                <h1 id="prediction-score" class="mt-2 ml-5 mr-5"></h1>
+                                <p class="pred-right text-center ml-5">
+                                    <span id="rpred-label"></span><br>
+                                    <span id="rpred-value"></span>
+                                </p>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer-component/>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autosize.js/4.0.2/autosize.min.js"></script>
+    <script src="../static/js/disclaimer_modal.js" type="text/javascript"></script>
+    <script>
+        // Initial Disclaimer Modal
+        manageModalDisplay("individual_disclaimer", "individual_understandButton", "individual_disclaimerAgreed")
+        // Global Variables
+        const textArea = document.getElementById("review");
+        const characterCount = document.getElementById("review-count");
+        const clearButton = document.getElementById('clearButton');
+        const predictButton = document.getElementById('predictButton');
+        const cdlevelElement = document.getElementById('cdlevel');
+        // Add an input event listener to the text area
+        textArea.addEventListener('input', function () {
+            if (textArea.value.trim() !== '') {
+                clearButton.disabled = false;
+                predictButton.disabled = false;
+            } else {
+                clearButton.disabled = true; 
+                predictButton.disabled = true; 
+            }
+        });
+        // Character Limit JS
+        textArea.addEventListener("input", function() {
+            characterCount.textContent = textArea.value.length + "/" + textArea.maxLength + " character limit";
+        });
+        // Autosizing JS
+        autosize(textArea);
+        // Text Area Keystroke JS
+        textArea.addEventListener('keydown', function(e) {
+            if (e.keyCode === 13 && e.ctrlKey) {
+                e.preventDefault();
+                clearButton.click();
+            } else if (e.keyCode === 13) {
+                e.preventDefault();
+                predictButton.click();
+            }
+        });
+        // Clear Button JS
+        clearButton.addEventListener('click', function() {
+            document.body.classList.add('color-change');
+            document.documentElement.style.backgroundColor = '#A3C6EE';
+            document.getElementById('Sentivm').src = '../static/images/Sentivm-On.png'; // once you type and then clear will show on 
+            textArea.value = '';
+            cdlevelElement.style.display = 'none'; // hide confidence level text
+            autosize.update(textArea);
+            document.getElementById('predictionResult').textContent = '';
+            document.getElementById('prediction-score').textContent = '';
+            document.getElementById('lpred-label').textContent = '';
+            document.getElementById('lpred-value').textContent = '';
+            document.getElementById('rpred-label').textContent = '';
+            document.getElementById('rpred-value').textContent = '';
+            document.getElementById('review-count').textContent = '0/500 character limit';
+            clearButton.disabled = true; 
+            predictButton.disabled = true; 
+        });
+
+        // Predict Button JS
+        predictButton.addEventListener('click', function() {
+        const review = textArea.value;
+        $.ajax({
+            type: 'POST',
+            url: '/predict',
+            data: { review: review },
+            success: function(result) {
+                const [sentiment, negativeConfidence, neutralConfidence, positiveConfidence] = result.split(',');
+                
+                // Set sentiment data and confidence levels in an array of objects
+                const sentiments = [
+                    { label: 'Positive', confidence: positiveConfidence },
+                    { label: 'Neutral', confidence: neutralConfidence },
+                    { label: 'Negative', confidence: negativeConfidence }
+                ];
+
+                // Sort the array by confidence level in descending order
+                sentiments.sort((a, b) => b.confidence - a.confidence);
+
+                // Set the major sentiment and confidence values
+                const majorSentiment = sentiments[0];
+                const secondSentiment = sentiments[1];
+                const lowestSentiment = sentiments[2];
+
+                // Update the UI based on the major sentiment
+                document.body.classList.add('color-change');
+                document.documentElement.style.backgroundColor = '#A3C6EE';
+                document.getElementById('predictionResult').textContent = sentiment.toUpperCase();
+                cdlevelElement.style.display = 'block';
+
+                // Update the UI elements with major, second, and lowest sentiments
+                document.getElementById('Sentivm').src = `../static/images/Sentivm-${majorSentiment.label}.png`;
+                document.getElementById('prediction-score').textContent = majorSentiment.confidence + '%';
+                document.getElementById('lpred-label').textContent = lowestSentiment.label;
+                document.getElementById('lpred-value').textContent = lowestSentiment.confidence + "%";
+                document.getElementById('rpred-label').textContent = secondSentiment.label;
+                document.getElementById('rpred-value').textContent = secondSentiment.confidence + "%";
+            }
+        });
+    });
+
+    </script>
+</body>
+</html>
