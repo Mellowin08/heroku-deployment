@@ -1,35 +1,45 @@
 from flask import Flask, jsonify, render_template, request, redirect, url_for, session 
 # Import function
-
 import pandas as pd
 import spacy
-from textblob import TextBlob
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import SVC
-from data_preprocess import text_cleaner
 import joblib
-import numpy as np
 import gdown
+from textblob import TextBlob
+import contractions
+import re
+import nltk
+from nltk.corpus import stopwords
+import numpy as np
+nltk.download('stopwords', quiet=True)
 
-# Google Drive links for the files
-google_drive_link_vectorizer = "https://drive.google.com/uc?id=1EzHFwNxd1FXUvZ8sArzX0moWrhA0fdHP"
-google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-HnrITGXyiQ2GpGj0yEXaOxm"
+nlp = spacy.load("en_core_web_sm")
 
-# Destination paths for saving the downloaded files
-destination_path_vectorizer = "tfidf_vectorizer.joblib"
-destination_path_svm_classifier = "SVM_classifier.joblib"
+app = Flask(__name__)
 
-# Function to download files from Google Drive
-def download_file(google_drive_link, destination_path):
-    gdown.download(google_drive_link, destination_path, quiet=False)
-
-
-# Load the vectorizer and SVM classifier using joblib
-vectorizer = joblib.load(destination_path_vectorizer)
-svm_classifier = joblib.load(destination_path_svm_classifier)
+# Set a secret key for sessions
+app.secret_key = 'your_secret_key_here'
 
 
+
+
+
+stop_words = set(stopwords.words('english'))
+negative_words = {'no', 'not', "never", "neither", "nor", "none", "nobody", "nowhere", "nothing", "hardly", "scarcely"}
+stop_words -= negative_words # Remove the Negative words
+
+
+
+
+def text_cleaner(text):
+    text = str(text).lower()                   # Convert to string and lowercase
+    text = contractions.fix(text)              # Expand Contractions
+    text = re.sub(r'<.*?>', ' ', text)         # Remove HTML tags
+    text = re.sub(r'http\S+', ' ', text)       # Remove URLs using regular expression not covered by tags
+    text = re.sub(r'[^A-Za-z0-9\s]', ' ', text) # Remove non-alphanumeric characters using regular expression
+    words = text.split()                       # Tokenize for stop word removal
+    cleaned_text = " ".join(word for word in words if word not in stop_words) # Remove the stopwords from the text.
+    print(cleaned_text)
+    return cleaned_text
 
 def predict_sentiment(user_input):
     clean_input = text_cleaner(user_input)
@@ -47,13 +57,6 @@ def predict_sentiment(user_input):
     confidence_percentages = (confidence_levels * 100).round().astype(int).tolist()
 
     return main_prediction[0], confidence_percentages[0]
-
-nlp = spacy.load("en_core_web_sm")
-
-app = Flask(__name__)
-
-# Set a secret key for sessions
-app.secret_key = 'your_secret_key_here'
 
 @app.route('/individual_review.html')
 def individual_reviews():
@@ -243,8 +246,20 @@ def result_page():
     return render_template('result_page.html', positive_count=positive_count, negative_count=negative_count, neutral_count=neutral_count, total_count=total_count, ranking=ranking, hvalue=hvalue, hlabel=hlabel, svalue=svalue, slabel=slabel, lvalue=lvalue, llabel=llabel, positive_phrases=positive_phrases, negative_phrases=negative_phrases, neutral_phrases=neutral_phrases)
 
 if __name__ == '__main__':
-    # Download the files from Google Drive when the Flask app is started
-    download_file(google_drive_link_vectorizer, destination_path_vectorizer)
-    download_file(google_drive_link_svm_classifier, destination_path_svm_classifier)
+    # Google Drive links for the files
+    google_drive_link_vectorizer = "https://drive.google.com/uc?id=1EzHFwNxd1FXUvZ8sArzX0moWrhA0fdHP"
+    google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-HnrITGXyiQ2GpGj0yEXaOxm"
+
+    # Destination paths for saving the downloaded files
+    destination_path_vectorizer = "tfidf_vectorizer.joblib"
+    destination_path_svm_classifier = "SVM_classifier.joblib"
+
+    # Download the files from Google Drive
+    gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
+    gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
+
+    # Load the vectorizer and SVM classifier using joblib
+    vectorizer = joblib.load(destination_path_vectorizer)
+    svm_classifier = joblib.load(destination_path_svm_classifier)
 
     app.run(debug=True)
