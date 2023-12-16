@@ -9,7 +9,6 @@ from sklearn.svm import SVC
 from data_preprocess import text_cleaner
 import joblib
 import numpy as np
-import os
 import gdown
 
 # Google Drive links for the files
@@ -20,18 +19,24 @@ google_drive_link_svm_classifier = "https://drive.google.com/uc?id=1ABWUGve7-Hnr
 destination_path_vectorizer = "tfidf_vectorizer.joblib"
 destination_path_svm_classifier = "SVM_classifier.joblib"
 
-# Check if files already exist
-if not os.path.exists(destination_path_vectorizer):
-    # Download the tfidf_vectorizer file from Google Drive
-    gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
-else:
-    print(f"{destination_path_vectorizer} already exists. Skipping download.")
+# Flag to check if files have already been downloaded
+files_downloaded = False
 
-if not os.path.exists(destination_path_svm_classifier):
-    # Download the SVM_classifier file from Google Drive
-    gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
-else:
-    print(f"{destination_path_svm_classifier} already exists. Skipping download.")
+def download_files():
+    global files_downloaded
+    if not files_downloaded:
+        # Download the tfidf_vectorizer file from Google Drive
+        gdown.download(google_drive_link_vectorizer, destination_path_vectorizer, quiet=False)
+
+        # Download the SVM_classifier file from Google Drive
+        gdown.download(google_drive_link_svm_classifier, destination_path_svm_classifier, quiet=False)
+
+        files_downloaded = True
+        print("Files downloaded successfully.")
+
+# Load the vectorizer and SVM classifier using joblib
+vectorizer = joblib.load(destination_path_vectorizer)
+svm_classifier = joblib.load(destination_path_svm_classifier)
 
 
 
@@ -247,4 +252,8 @@ def result_page():
     return render_template('result_page.html', positive_count=positive_count, negative_count=negative_count, neutral_count=neutral_count, total_count=total_count, ranking=ranking, hvalue=hvalue, hlabel=hlabel, svalue=svalue, slabel=slabel, lvalue=lvalue, llabel=llabel, positive_phrases=positive_phrases, negative_phrases=negative_phrases, neutral_phrases=neutral_phrases)
 
 if __name__ == '__main__':
+
+    # Download files when the Flask app starts
+    download_files()
+    
     app.run(debug=True)
